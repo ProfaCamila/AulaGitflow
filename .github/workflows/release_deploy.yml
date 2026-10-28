@@ -2,7 +2,7 @@ name: Release e Deploy em Producao
 
 on:
   push:
-    branches: [ "master" ]
+    branches: [ "master", "main" ]
 
 jobs:
   release-e-deploy:
