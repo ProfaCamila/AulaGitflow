@@ -1,17 +1,32 @@
-name: Validação de PR - CI
+name: Release e Deploy em Producao
 
 on:
-  pull_request:
-    branches: [ "develop", "master" ]
+  push:
+    branches: [ "master" ]
 
 jobs:
-  testes:
+  release-e-deploy:
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      pages: write
+      id-token: write
     steps:
-      - name: Baixar código do repositório
+      - name: Baixar código
         uses: actions/checkout@v3
 
-      - name: Executar validação automatizada
-        run: |
-          echo "Verificando estrutura e qualidade do código..."
-          echo "Validação concluída com sucesso!"
+      - name: Criar Release no GitHub
+        uses: softprops/action-gh-release@v1
+        with:
+          tag_name: v1.0.0
+          name: Release v1.0.0 - Versão Oficial
+          body: |
+            Nova versão publicada com sucesso via pipeline CI/CD no GitHub Pages!
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Deploy no GitHub Pages
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./
